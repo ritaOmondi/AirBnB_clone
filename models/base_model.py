@@ -6,6 +6,7 @@ parent class is BaseModule
 
 import uuid
 from datetime import datetime
+#from models.engine.file_storage import storage
 
 class BaseModel:
 
@@ -16,24 +17,25 @@ class BaseModel:
         """This is the class instantiator"""
         if kwargs:
             for key, value in kwargs.items():
-                setattr(self,key, value)
-        if 'id' not in kwargs:
-            self.id = str(uuid.uuid4())
-
-        if 'created_at' not in kwargs:
+                if key == 'created_at' or key == 'updated_at':
+                    setattr(self, key, datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f'))
+                elif key != '__class__':
+                    setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())  # Generate a unique ID
             self.created_at = datetime.now()
-
-        if 'updated_at' not in kwargs:
             self.updated_at = datetime.now()
+            #storage.new(self)
 
     def __str__(self):
         """Return a string representation of the object."""
         return "[{}] ({}) {}".format(
             self.__class__.__name__, self.id, self.__dict__)
 
-    def save(self):
-        """Update the updated_at attribute with the current datetime."""
+    def save(Self):
+        """" Update the updated_at attribute with the current datetime"""
         self.updated_at = datetime.now()
+
 
     def to_dict(self):
         """Return a dictionary representation of the object."""
