@@ -6,6 +6,7 @@ parent class is BaseModule
 
 import uuid
 from datetime import datetime
+import models
 #from models.engine.file_storage import storage
 
 class BaseModel:
@@ -25,17 +26,17 @@ class BaseModel:
             self.id = str(uuid.uuid4())  # Generate a unique ID
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-            #storage.new(self)
+            models.storage.new(self)
 
     def __str__(self):
         """Return a string representation of the object."""
         return "[{}] ({}) {}".format(
             self.__class__.__name__, self.id, self.__dict__)
 
-    def save(Self):
-        """" Update the updated_at attribute with the current datetime"""
+    def save(self):
+        """Call save(self) method of storage."""
         self.updated_at = datetime.now()
-
+        models.storage.save()
 
     def to_dict(self):
         """Return a dictionary representation of the object."""
