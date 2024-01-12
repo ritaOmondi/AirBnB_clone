@@ -2,6 +2,7 @@
 """cREATING subclass FileStorage"""
 import json
 from models.base_model import BaseModel
+from models.user import User
 
 class FileStorage:
     """
@@ -13,6 +14,11 @@ class FileStorage:
     def all(self):
         """Returns the dictionary __objects."""
         return self.__objects
+
+    def classes(self):
+        """Returns a list of available classes"""
+
+        return list(set(obj.__class__.__name__ for obj in self.__objects.values()))
 
     def new(self, obj):
         """Sets in __objects the obj with key <obj class name>.id."""
@@ -35,7 +41,10 @@ class FileStorage:
                 loaded_objects = json.load(file)
                 for key, obj_dict in loaded_objects.items():
                     class_name, obj_id = key.split('.')
-                    class_obj = globals()[class_name]
+                    if class_name == 'User':
+                        class_obj = User
+                    else:
+                        class_obj = globals()[class_name]
                     obj_instance = class_obj(**obj_dict)
                     self.__objects[key] = obj_instance
         except FileNotFoundError:
