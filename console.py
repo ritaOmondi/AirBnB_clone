@@ -6,6 +6,7 @@ import sys
 import shlex
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
 
 class HBNBCommand(cmd.Cmd):
     """Command interpreter class"""
@@ -30,13 +31,19 @@ class HBNBCommand(cmd.Cmd):
         if not arg:
             print("** class name missing **")
             return
-
         try:
-            new_instance = eval(arg)()
+            if class_name == 'User':
+                new_instance = User()
+            else:
+                new_instance = eval(arg)()
+
             new_instance.save()
             print(new_instance.id)
-        except Exception as e:
+        except TypeError as e:
             print("** {}".format(str(e)))
+        except Exception as e:
+            print("** An unexpected error occurred: {}".format(str(e)))
+
 
     def do_show(self, arg):
         """Prints the string representation of an instance"""
